@@ -1,0 +1,982 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AnyPolicy — Policy drafting & review, by jurisdiction</title>
+<meta name="description" content="Draft or review HR, safeguarding, and data protection policies matched to the laws of the jurisdiction you operate in." />
+</head>
+<body>
+<style>
+  :root{
+    --ink:#1C3829;
+    --parchment:#F6F1E7;
+    --paper:#FFFFFF;
+    --brass:#7A2E2E;
+    --brass-light:#B97575;
+    --slate:#5C6B62;
+    --sage:#8C7A3D;
+    --rule:#DDD6C5;
+    --banner-bg:#F6EFDC;
+    --selected-bg:#F7EEEE;
+    --font-display: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:var(--font-body);
+    background:var(--parchment);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{text-wrap:balance;}
+  button,input,textarea,select{font-family:inherit;}
+  input:focus,select:focus,textarea:focus,button:focus-visible{
+    outline:2px solid var(--brass);
+    outline-offset:2px;
+  }
+  a{color:inherit;}
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;animation:none !important;}
+  }
+
+  /* -------- layout helpers -------- */
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px;}
+  .wrap-narrow{max-width:440px;margin:0 auto;padding:0 24px;}
+  .wrap-mode{max-width:900px;margin:0 auto;padding:0 24px;}
+  .wrap-wizard{max-width:960px;margin:0 auto;padding:0 24px;}
+  .wrap-pricing{max-width:1100px;margin:0 auto;padding:0 24px;}
+
+  .grid-hero{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;}
+  .grid-cols-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid-cols-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .grid-cols-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:stretch;}
+  .grid-mode{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .grid-wizard{display:grid;grid-template-columns:180px 1fr;gap:40px;}
+  .grid-country{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-height:360px;overflow-y:auto;padding-right:4px;}
+
+  @media (max-width:900px){
+    .grid-cols-4{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:640px){
+    .grid-hero{grid-template-columns:1fr;}
+    .grid-hero > div:last-child{margin-top:32px;}
+    .grid-cols-2{grid-template-columns:1fr;}
+    .grid-cols-3{grid-template-columns:1fr;}
+    .grid-cols-4{grid-template-columns:1fr;}
+    .grid-mode{grid-template-columns:1fr;}
+    .grid-wizard{grid-template-columns:1fr;}
+    .grid-country{grid-template-columns:1fr;}
+  }
+
+  /* -------- header / footer -------- */
+  .site-header{
+    border-bottom:2px solid var(--ink);
+    background:var(--paper);
+    position:sticky;top:0;z-index:10;
+  }
+  .site-header-inner{
+    max-width:1040px;margin:0 auto;padding:18px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:10px;
+  }
+  .brand-btn{display:flex;align-items:baseline;gap:10px;background:none;border:none;cursor:pointer;padding:0;}
+  .brand-name{font-family:var(--font-display);font-size:21px;font-weight:700;letter-spacing:0.01em;color:var(--ink);}
+  .header-actions{display:flex;align-items:center;gap:18px;}
+  .link-btn{background:none;border:none;cursor:pointer;font-size:13px;font-weight:500;color:var(--slate);padding:0;}
+  .user-chip{
+    display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;
+    border:1px solid var(--rule);border-radius:20px;background:var(--paper);cursor:pointer;
+  }
+  .user-avatar{
+    width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--paper);
+    font-family:var(--font-mono);font-size:10px;font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .site-footer{
+    border-top:1px solid var(--rule);margin-top:40px;padding:24px;
+    text-align:center;font-size:11px;color:var(--slate);
+  }
+
+  /* -------- buttons -------- */
+  .btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:5px;cursor:pointer;font-family:var(--font-body);}
+  .btn-primary{padding:9px 16px;font-size:13px;font-weight:600;background:var(--ink);color:var(--paper);}
+  .btn-primary.lg{padding:12px 22px;font-size:14px;}
+  .btn-ghost{padding:9px 14px;font-size:13px;font-weight:500;background:transparent;color:var(--ink);border:1px solid var(--rule);}
+  .btn-ghost.sm{padding:7px 12px;font-size:12px;}
+  .btn-nav{padding:10px 18px;font-size:13px;font-weight:500;background:transparent;color:var(--ink);}
+  .btn-nav.primary{background:var(--ink);color:var(--paper);}
+  .btn-nav.final{background:var(--brass);color:var(--paper);opacity:0.6;cursor:not-allowed;}
+  .btn-nav[disabled]{background:var(--rule);color:var(--paper);cursor:not-allowed;}
+  .btn[disabled]{cursor:not-allowed;}
+  .btn-block{width:100%;justify-content:center;}
+
+  /* -------- generic cards / sections -------- */
+  .section{max-width:1040px;margin:0 auto;padding:40px 24px;}
+  .card{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:24px;}
+  .icon-circle{
+    width:40px;height:40px;border-radius:50%;background:var(--parchment);
+    display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+  }
+  .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:0.08em;color:var(--brass);margin-bottom:6px;text-transform:uppercase;}
+  .h-title{font-family:var(--font-display);font-weight:700;margin:0 0 4px;}
+  .sub{font-size:13px;color:var(--slate);margin:0;}
+
+  /* -------- chip / picker -------- */
+  .chip{
+    padding:10px 12px;font-size:13px;border:1.5px solid var(--rule);border-radius:5px;
+    cursor:pointer;background:var(--paper);color:var(--ink);text-align:left;transition:border-color .15s;
+  }
+  .chip.selected{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .chip-country{display:flex;align-items:center;gap:10px;}
+  .chip-country .region{font-size:11px;color:var(--slate);}
+  .chip-country.selected .region{color:var(--brass-light);}
+
+  .instrument-row{
+    display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;
+    padding:16px 18px;border-radius:6px;border:1.5px solid var(--rule);background:var(--paper);cursor:pointer;
+  }
+  .instrument-row.selected{border-color:var(--ink);background:var(--selected-bg);}
+  .instrument-icon{
+    width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    background:var(--parchment);color:var(--ink);
+  }
+  .instrument-row.selected .instrument-icon{background:var(--ink);color:var(--paper);}
+  .instrument-check{
+    width:20px;height:20px;border:1.5px solid var(--rule);display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;margin-top:2px;background:transparent;
+  }
+  .instrument-check.round{border-radius:50%;}
+  .instrument-check.square{border-radius:4px;}
+  .instrument-row.selected .instrument-check{border-color:var(--ink);background:var(--ink);}
+
+  input[type=text],input[type=email],textarea{
+    width:100%;padding:10px 12px;font-size:14px;font-family:var(--font-body);
+    border:1.5px solid var(--rule);border-radius:5px;background:var(--paper);color:var(--ink);
+  }
+  textarea{min-height:220px;resize:vertical;line-height:1.6;}
+  .field{margin-bottom:18px;}
+  .field label{display:block;font-size:12px;font-weight:500;color:var(--slate);margin-bottom:6px;}
+  .input-icon-wrap{position:relative;}
+  .input-icon-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--slate);}
+  .input-icon-wrap input{padding-left:36px;}
+
+  .banner{
+    border:1px dashed var(--brass);border-radius:6px;padding:16px 18px;background:var(--banner-bg);
+    font-size:13px;color:var(--ink);margin-bottom:20px;line-height:1.5;
+  }
+  .banner.sm{padding:12px 14px;font-size:11.5px;}
+  .disclaimer{font-size:12px;color:var(--slate);line-height:1.6;}
+
+  .review-row{display:flex;align-items:flex-start;gap:12px;padding:14px 18px;border-bottom:1px solid var(--rule);}
+  .review-row:last-child{border-bottom:none;}
+  .review-row svg{color:var(--brass);margin-top:2px;flex-shrink:0;}
+  .review-row .rlabel{font-size:11px;color:var(--slate);margin-bottom:2px;}
+  .review-row .rvalue{font-size:14px;font-weight:500;}
+  .review-table{border:1px solid var(--rule);border-radius:6px;background:var(--paper);overflow:hidden;margin-bottom:20px;}
+
+  /* -------- wizard step nav -------- */
+  .step-nav-list{list-style:none;margin:0;padding:0;position:relative;}
+  .step-rail{position:absolute;left:11px;top:12px;bottom:12px;width:1px;background:var(--rule);}
+  .step-item{display:flex;align-items:center;gap:12px;margin-bottom:28px;position:relative;}
+  .step-item.clickable{cursor:pointer;}
+  .step-badge{
+    width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-size:11px;flex-shrink:0;background:var(--paper);
+    border:1.5px solid var(--rule);color:var(--ink);position:relative;z-index:1;
+  }
+  .step-badge.active{border-color:var(--ink);}
+  .step-badge.done{background:var(--ink);border-color:var(--ink);color:var(--paper);}
+  .step-label{font-size:13px;font-weight:500;color:var(--slate);}
+  .step-label.active{font-weight:600;color:var(--ink);}
+
+  .docref-bar{border-bottom:1px solid var(--rule);background:var(--paper);}
+  .docref-inner{max-width:960px;margin:0 auto;padding:10px 24px;font-family:var(--font-mono);font-size:12px;color:var(--brass);text-align:right;}
+
+  /* -------- comparison section -------- */
+  .compare-card{border-radius:8px;padding:24px;}
+  .compare-card.generic{background:var(--parchment);border:1.5px solid var(--rule);}
+  .compare-card.feature{background:var(--paper);border:2px solid var(--brass);position:relative;box-shadow:0 20px 40px -28px rgba(28,56,41,0.35);}
+  .compare-badge{position:absolute;top:-12px;right:20px;background:var(--brass);color:var(--paper);font-size:10.5px;font-weight:700;letter-spacing:0.06em;padding:4px 10px;border-radius:20px;}
+  .compare-title{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+  .compare-row{display:flex;gap:10px;align-items:flex-start;}
+  .compare-list{display:grid;gap:14px;}
+
+  /* -------- pricing -------- */
+  .tier-card{position:relative;background:var(--paper);border:1.5px solid var(--rule);border-radius:8px;padding:22px;display:flex;flex-direction:column;}
+  .tier-card.highlighted{border:2px solid var(--brass);box-shadow:0 20px 40px -28px rgba(28,56,41,0.35);}
+  .tier-badge{position:absolute;top:-12px;left:20px;background:var(--brass);color:var(--paper);font-size:10px;font-weight:700;letter-spacing:0.06em;padding:4px 10px;border-radius:20px;}
+  .tier-name{font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:4px;}
+  .tier-tagline{font-size:12px;color:var(--slate);margin-bottom:16px;min-height:32px;}
+  .tier-price{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--ink);}
+  .tier-period{font-size:13px;color:var(--slate);}
+  .tier-features{display:grid;gap:10px;margin:18px 0 22px;flex:1;}
+  .tier-feature{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.45;}
+  .tier-feature svg{color:var(--sage);margin-top:2px;flex-shrink:0;}
+
+  /* -------- country pills (landing) -------- */
+  .pill{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--rule);border-radius:20px;background:var(--paper);font-size:13px;}
+  .pill-more{display:flex;align-items:center;padding:8px 14px;border-radius:20px;font-size:13px;color:var(--brass);font-weight:600;}
+
+  /* -------- misc -------- */
+  .cta-band{border:1.5px solid var(--ink);border-radius:8px;padding:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;background:var(--paper);}
+  .mode-card{
+    text-align:left;background:var(--paper);border:1.5px solid var(--rule);border-radius:8px;padding:26px;
+    cursor:pointer;display:flex;flex-direction:column;gap:14px;width:100%;
+  }
+  .mode-card .icon-circle{width:44px;height:44px;margin-bottom:0;}
+  .mode-card-title{font-family:var(--font-display);font-size:19px;font-weight:600;margin-bottom:6px;color:var(--ink);}
+  .mode-card-desc{font-size:13px;color:var(--slate);line-height:1.55;}
+  .mode-card-cta{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--brass);margin-top:auto;}
+
+  .hero-mock{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:22px;box-shadow:0 24px 48px -24px rgba(28,56,41,0.25);}
+  .path-card{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:24px;}
+</style>
+
+<div id="app"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================= data ============================= */
+  var COUNTRIES = [
+    {name:"United States",iso2:"US",region:"North America"},
+    {name:"Canada",iso2:"CA",region:"North America"},
+    {name:"Mexico",iso2:"MX",region:"North America"},
+    {name:"United Kingdom",iso2:"GB",region:"Europe"},
+    {name:"Ireland",iso2:"IE",region:"Europe"},
+    {name:"Germany",iso2:"DE",region:"Europe"},
+    {name:"France",iso2:"FR",region:"Europe"},
+    {name:"Spain",iso2:"ES",region:"Europe"},
+    {name:"Italy",iso2:"IT",region:"Europe"},
+    {name:"Netherlands",iso2:"NL",region:"Europe"},
+    {name:"Sweden",iso2:"SE",region:"Europe"},
+    {name:"Poland",iso2:"PL",region:"Europe"},
+    {name:"Switzerland",iso2:"CH",region:"Europe"},
+    {name:"India",iso2:"IN",region:"Asia-Pacific"},
+    {name:"China",iso2:"CN",region:"Asia-Pacific"},
+    {name:"Japan",iso2:"JP",region:"Asia-Pacific"},
+    {name:"Singapore",iso2:"SG",region:"Asia-Pacific"},
+    {name:"Australia",iso2:"AU",region:"Asia-Pacific"},
+    {name:"New Zealand",iso2:"NZ",region:"Asia-Pacific"},
+    {name:"Indonesia",iso2:"ID",region:"Asia-Pacific"},
+    {name:"Philippines",iso2:"PH",region:"Asia-Pacific"},
+    {name:"Malaysia",iso2:"MY",region:"Asia-Pacific"},
+    {name:"South Korea",iso2:"KR",region:"Asia-Pacific"},
+    {name:"United Arab Emirates",iso2:"AE",region:"Middle East & Africa"},
+    {name:"Saudi Arabia",iso2:"SA",region:"Middle East & Africa"},
+    {name:"South Africa",iso2:"ZA",region:"Middle East & Africa"},
+    {name:"Nigeria",iso2:"NG",region:"Middle East & Africa"},
+    {name:"Egypt",iso2:"EG",region:"Middle East & Africa"},
+    {name:"Kenya",iso2:"KE",region:"Middle East & Africa"},
+    {name:"Brazil",iso2:"BR",region:"South America"},
+    {name:"Argentina",iso2:"AR",region:"South America"},
+    {name:"Chile",iso2:"CL",region:"South America"},
+    {name:"Colombia",iso2:"CO",region:"South America"}
+  ];
+
+  var SECTORS = [
+    "Corporate / Private company","Nonprofit / NGO","Startup / SME",
+    "Education","Healthcare","Government / Public sector"
+  ];
+
+  var POLICY_TYPES = [
+    {id:"hr",code:"HR",title:"HR Policy",icon:"users",
+      description:"Employment terms, conduct standards, leave entitlements, and workplace rules aligned to local labor law."},
+    {id:"safeguarding",code:"SG",title:"Safeguarding Policy",icon:"shieldCheck",
+      description:"Protecting children and vulnerable adults from harm across programs, staff conduct, and operations."},
+    {id:"data",code:"DP",title:"Data Protection Policy",icon:"lock",
+      description:"Collection, storage, and handling of personal data in line with local privacy and data protection law."}
+  ];
+
+  var DRAFT_STEPS = [{id:1,label:"Organization"},{id:2,label:"Jurisdiction"},{id:3,label:"Instruments"},{id:4,label:"Review"}];
+  var REVIEW_STEPS = [{id:1,label:"Jurisdiction"},{id:2,label:"Instrument"},{id:3,label:"Document"},{id:4,label:"Findings"}];
+
+  var PREVIEW_COUNTRIES = ["US","GB","DE","IN","AE","ZA","BR","SG","AU","CA","FR","NG"];
+
+  var PRICING_TIERS = [
+    {id:"trial",name:"Trial",price:"$0",period:"",tagline:"See the workflow before you commit.",cta:"Start free",highlighted:false,
+      features:["1 draft or 1 review","1 jurisdiction","Preview only — no export","Community support"]},
+    {id:"starter",name:"Starter",price:"$29",period:"/month",tagline:"For a single HR or compliance lead.",cta:"Choose Starter",highlighted:false,
+      features:["5 documents / month","3 jurisdictions included","1 seat","PDF & Word export","Email support"]},
+    {id:"team",name:"Team",price:"$89",period:"/month",tagline:"For HR, legal, and ops working together.",cta:"Choose Team",highlighted:true,
+      features:["25 documents / month","All jurisdictions included","Up to 5 seats","PDF & Word export","Draft + review flows","Priority support"]},
+    {id:"enterprise",name:"Enterprise",price:"Custom",period:"",tagline:"For organizations operating across many countries.",cta:"Talk to us",highlighted:false,
+      features:["Unlimited documents","Unlimited jurisdictions","Unlimited seats","API access","SSO & audit logs","Dedicated support"]}
+  ];
+
+  var COMPARISON_ROWS = [
+    {generic:"Start from a blank prompt box",anypolicy:"Start from a guided intake form"},
+    {generic:"Output format changes every time you ask",anypolicy:"Same structured dossier format, every time"},
+    {generic:"Jurisdiction is whatever you remembered to type",anypolicy:"Jurisdiction is locked in from step one"},
+    {generic:"No dedicated way to check a policy you already have",anypolicy:"A separate flow built just for reviewing existing policies"},
+    {generic:"Legal-review reminder — maybe, maybe not",anypolicy:"Legal-review reminder shown on every screen"}
+  ];
+
+  var PERSONAL_EMAIL_DOMAINS = ["gmail.com","yahoo.com","outlook.com","hotmail.com","icloud.com","aol.com","live.com","protonmail.com","mail.com"];
+
+  /* ============================= helpers ============================= */
+  function escapeHtml(str){
+    return String(str == null ? "" : str).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function flagEmoji(iso2){
+    return iso2.toUpperCase().replace(/./g, function(ch){
+      return String.fromCodePoint(127397 + ch.charCodeAt(0));
+    });
+  }
+
+  function todayRef(){
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+  }
+
+  function parseWorkEmail(email){
+    var trimmed = (email || "").trim().toLowerCase();
+    var match = trimmed.match(/^[^\s@]+@([^\s@]+\.[^\s@]+)$/);
+    if(!match) return {valid:false,error:"Enter a full email address."};
+    var domain = match[1];
+    if(PERSONAL_EMAIL_DOMAINS.indexOf(domain) !== -1){
+      return {valid:false,error:"Please use your work email address — personal domains like gmail.com aren't supported."};
+    }
+    var local = trimmed.split("@")[0];
+    var initials = local.slice(0,2).toUpperCase();
+    var orgName = domain.split(".")[0];
+    var org = orgName.charAt(0).toUpperCase() + orgName.slice(1);
+    return {valid:true,email:trimmed,domain:domain,initials:initials,org:org};
+  }
+
+  function findCountry(iso2){
+    for(var i=0;i<COUNTRIES.length;i++) if(COUNTRIES[i].iso2 === iso2) return COUNTRIES[i];
+    return null;
+  }
+  function findPolicy(id){
+    for(var i=0;i<POLICY_TYPES.length;i++) if(POLICY_TYPES[i].id === id) return POLICY_TYPES[i];
+    return null;
+  }
+
+  /* ============================= icons ============================= */
+  var ICON_PATHS = {
+    building2:'<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>',
+    globe2:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+    shieldCheck:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+    fileText:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/>',
+    search:'<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+    check:'<polyline points="20 6 9 17 4 12"/>',
+    arrowRight:'<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+    arrowLeft:'<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>',
+    users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    clipboardList:'<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>',
+    scrollText:'<path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M15 8h-5"/><path d="M15 12h-5"/>',
+    filePlus2:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="12" y1="18" x2="12" y2="12"/>',
+    fileSearch:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><circle cx="10.5" cy="14.5" r="2.5"/><line x1="12.5" y1="16.5" x2="14" y2="18"/>',
+    uploadCloud:'<path d="M4 14.9A5 5 0 0 1 6 5.2 6.5 6.5 0 0 1 18.9 8.1 4.5 4.5 0 0 1 18 17"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/>',
+    alertCircle:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+    x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+    minus:'<line x1="5" y1="12" x2="19" y2="12"/>',
+    mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+    logOut:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
+    keyRound:'<path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/>'
+  };
+  function icon(name, size, extra){
+    size = size || 16;
+    extra = extra || "";
+    return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+      'stroke-linecap="round" stroke-linejoin="round" style="display:block;flex-shrink:0;'+extra+'">' + (ICON_PATHS[name]||"") + '</svg>';
+  }
+
+  /* ============================= state ============================= */
+  var state = {
+    view: "landing",
+    user: null,
+    pendingView: "mode",
+    login: {email:"", error:""},
+    draft: {step:1, orgName:"", sector:"", country:null, countryQuery:"", selectedPolicies:[]},
+    review: {step:1, country:null, countryQuery:"", instrument:null, docText:"", fileName:""}
+  };
+
+  function freshDraft(){ return {step:1, orgName:"", sector:"", country:null, countryQuery:"", selectedPolicies:[]}; }
+  function freshReview(){ return {step:1, country:null, countryQuery:"", instrument:null, docText:"", fileName:""}; }
+
+  /* ============================= navigation ============================= */
+  function setView(v){
+    if(v === "draft") state.draft = freshDraft();
+    if(v === "review") state.review = freshReview();
+    state.view = v;
+    window.scrollTo(0,0);
+    render();
+  }
+  function goProtected(target){
+    if(state.user){ setView(target); }
+    else { state.pendingView = target; setView("login"); }
+  }
+  function handleSignOut(){
+    state.user = null;
+    setView("landing");
+  }
+
+  /* ============================= root render ============================= */
+  function render(){
+    var app = document.getElementById("app");
+    var body = "";
+    if(state.view === "landing") body = renderLanding();
+    else if(state.view === "pricing") body = renderPricing();
+    else if(state.view === "login") body = renderLogin();
+    else if(state.view === "mode") body = renderModeSelect();
+    else if(state.view === "draft") body = renderDraftWizard();
+    else if(state.view === "review") body = renderReviewWizard();
+
+    app.innerHTML = renderHeader() + body + renderFooter();
+
+    if(state.view === "login"){
+      var emailInput = document.getElementById("emailInput");
+      if(emailInput) emailInput.value = state.login.email;
+    }
+    if(state.view === "draft"){
+      var orgInput = document.getElementById("orgNameInput");
+      if(orgInput) orgInput.value = state.draft.orgName;
+    }
+    if(state.view === "review" && state.review.step === 3){
+      var ta = document.getElementById("docTextArea");
+      if(ta) ta.value = state.review.docText;
+    }
+  }
+
+  /* ============================= header / footer ============================= */
+  function renderHeader(){
+    var actions = "";
+    if(state.view === "landing" || state.view === "pricing"){
+      actions += '<button class="link-btn" onclick="App.setView(\'pricing\')">Pricing</button>';
+    }
+    if(state.view !== "landing" && state.view !== "pricing" && state.view !== "login"){
+      actions += '<button class="btn-nav" style="padding:0;gap:6px;" onclick="App.setView(\'landing\')">'+icon("arrowLeft",14)+' Back to home</button>';
+    }
+    if(state.view !== "login"){
+      if(state.user){
+        actions += '<button class="user-chip" title="Sign out" onclick="App.handleSignOut()">' +
+          '<span class="user-avatar">'+escapeHtml(state.user.initials)+'</span>' +
+          '<span style="font-size:12px;color:var(--ink);font-weight:500;">'+escapeHtml(state.user.org)+'</span>' +
+          icon("logOut",13,"color:var(--slate);") + '</button>';
+      } else {
+        actions += '<button class="btn btn-primary" onclick="App.goProtected(\'mode\')">Sign in '+icon("arrowRight",14)+'</button>';
+      }
+    }
+    return '<header class="site-header"><div class="site-header-inner">' +
+      '<button class="brand-btn" onclick="App.setView(\'landing\')">'+icon("scrollText",20,"color:var(--brass);")+'<span class="brand-name">AnyPolicy</span></button>' +
+      '<div class="header-actions">'+actions+'</div>' +
+      '</div></header>';
+  }
+
+  function renderFooter(){
+    return '<footer class="site-footer">AnyPolicy is a drafting and review aid, not a substitute for legal advice. © ' +
+      new Date().getFullYear() + ' AnyPolicy.</footer>';
+  }
+
+  function sectionHeading(eyebrow, title, subtitle){
+    return '<div style="margin-bottom:24px;">' +
+      '<div class="eyebrow">'+escapeHtml(eyebrow)+'</div>' +
+      '<h2 class="h-title" style="font-size:26px;">'+escapeHtml(title)+'</h2>' +
+      (subtitle ? '<p class="sub">'+escapeHtml(subtitle)+'</p>' : '') +
+      '</div>';
+  }
+
+  /* ============================= landing ============================= */
+  function renderLanding(){
+    var hero = '<section class="wrap" style="padding:72px 24px 56px;">' +
+      '<div class="grid-hero">' +
+        '<div>' +
+          '<div class="eyebrow">POLICY DRAFTING & REVIEW, BY JURISDICTION</div>' +
+          '<h1 class="h-title" style="font-size:44px;line-height:1.12;margin:0 0 18px;">Organizational policy, matched to the laws where you operate.</h1>' +
+          '<p style="font-size:16px;color:var(--slate);line-height:1.6;margin:0 0 28px;max-width:460px;">Draft a new HR, safeguarding, or data protection policy from scratch — or hand over one you already have and see how it holds up against local law.</p>' +
+          '<div style="display:flex;gap:12px;align-items:center;">' +
+            '<button class="btn btn-primary lg" onclick="App.goProtected(\'mode\')">Get started '+icon("arrowRight",15)+'</button>' +
+            '<span style="font-size:12px;color:var(--slate);">No account required to try it</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="hero-mock">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
+            '<span style="font-family:var(--font-mono);font-size:10px;color:var(--brass);">AP / IN / HR+DP / '+todayRef()+'</span>' +
+            '<span style="font-size:10px;color:var(--sage);font-weight:600;">DRAFT</span>' +
+          '</div>' +
+          '<div style="font-family:var(--font-display);font-size:18px;font-weight:600;margin-bottom:4px;">Meridian Health Trust</div>' +
+          '<div style="font-size:12px;color:var(--slate);margin-bottom:18px;">'+flagEmoji("IN")+' India · Asia-Pacific · Healthcare</div>' +
+          '<div style="border-top:1px solid var(--rule);padding-top:14px;display:grid;gap:10px;">' +
+            POLICY_TYPES.slice(0,2).map(function(p){
+              return '<div style="display:flex;align-items:center;gap:10px;">' +
+                '<div class="icon-circle" style="width:28px;height:28px;margin-bottom:0;">'+icon(p.icon,13)+'</div>' +
+                '<span style="font-size:13px;font-weight:500;">'+escapeHtml(p.title)+'</span>' +
+                '<span style="margin-left:auto;color:var(--sage);">'+icon("check",13)+'</span>' +
+              '</div>';
+            }).join("") +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</section>';
+
+    var twoPaths = '<section class="section">' +
+      sectionHeading("Two paths","Start from a blank page, or check what you have") +
+      '<div class="grid-cols-2">' +
+        '<div class="path-card"><div class="icon-circle">'+icon("filePlus2",19)+'</div>' +
+          '<div style="font-family:var(--font-display);font-size:18px;font-weight:600;margin-bottom:6px;">Draft a new policy</div>' +
+          '<div style="font-size:13px;color:var(--slate);line-height:1.55;">Answer a few questions about your organization and jurisdiction, and assemble a dossier ready for counsel to review.</div></div>' +
+        '<div class="path-card"><div class="icon-circle">'+icon("fileSearch",19)+'</div>' +
+          '<div style="font-family:var(--font-display);font-size:18px;font-weight:600;margin-bottom:6px;">Review an existing policy</div>' +
+          '<div style="font-size:13px;color:var(--slate);line-height:1.55;">Paste or upload a policy you already use, choose the jurisdiction it needs to comply with, and see where it may fall short.</div></div>' +
+      '</div>' +
+    '</section>';
+
+    var genericRows = COMPARISON_ROWS.map(function(r){
+      return '<div class="compare-row"><span style="color:var(--slate);opacity:.7;margin-top:2px;">'+icon("x",15)+'</span>' +
+        '<span style="font-size:13.5px;color:var(--slate);line-height:1.5;">'+escapeHtml(r.generic)+'</span></div>';
+    }).join("");
+    var apRows = COMPARISON_ROWS.map(function(r){
+      return '<div class="compare-row"><span style="color:var(--sage);margin-top:2px;">'+icon("check",15)+'</span>' +
+        '<span style="font-size:13.5px;color:var(--ink);font-weight:500;line-height:1.5;">'+escapeHtml(r.anypolicy)+'</span></div>';
+    }).join("");
+
+    var whyNot = '<section class="section">' +
+      sectionHeading("Why AnyPolicy","Not just another prompt box","Two ways to get a policy drafted. Here's what actually differs.") +
+      '<div class="grid-cols-2">' +
+        '<div class="compare-card generic">' +
+          '<div class="compare-title">'+icon("minus",16,"color:var(--slate);")+'<span style="font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--slate);">Generic AI chat tools</span></div>' +
+          '<p style="font-size:12px;color:var(--slate);margin:0 0 18px;">ChatGPT, Claude, Gemini, used directly</p>' +
+          '<div class="compare-list">'+genericRows+'</div>' +
+        '</div>' +
+        '<div class="compare-card feature">' +
+          '<div class="compare-badge">THIS TOOL</div>' +
+          '<div class="compare-title">'+icon("scrollText",16,"color:var(--brass);")+'<span style="font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--ink);">AnyPolicy</span></div>' +
+          '<p style="font-size:12px;color:var(--slate);margin:0 0 18px;">A guided, jurisdiction-first workflow</p>' +
+          '<div class="compare-list">'+apRows+'</div>' +
+        '</div>' +
+      '</div>' +
+      '<p style="font-size:11.5px;color:var(--slate);margin-top:16px;line-height:1.6;">Both approaches produce drafts that need review by qualified local counsel. The difference is how much structure and jurisdiction-awareness you get before that review starts.</p>' +
+    '</section>';
+
+    var instruments = '<section class="section">' +
+      sectionHeading("Instruments","What you can draft or review") +
+      '<div class="grid-cols-3">' +
+        POLICY_TYPES.map(function(p){
+          return '<div class="card"><div class="icon-circle">'+icon(p.icon,17)+'</div>' +
+            '<div style="font-family:var(--font-display);font-size:17px;font-weight:600;margin-bottom:6px;">'+escapeHtml(p.title)+'</div>' +
+            '<div style="font-size:13px;color:var(--slate);line-height:1.5;">'+escapeHtml(p.description)+'</div></div>';
+        }).join("") +
+      '</div>' +
+    '</section>';
+
+    var pills = PREVIEW_COUNTRIES.map(function(iso2){
+      var c = findCountry(iso2);
+      return '<div class="pill"><span style="font-size:15px;">'+flagEmoji(iso2)+'</span>'+escapeHtml(c.name)+'</div>';
+    }).join("");
+
+    var jurisdictions = '<section class="section" style="padding-bottom:72px;">' +
+      sectionHeading("Coverage","Jurisdictions on the map", COUNTRIES.length+"+ countries, spanning every region") +
+      '<div style="display:flex;flex-wrap:wrap;gap:10px;">' + pills +
+        '<div class="pill-more">+'+(COUNTRIES.length - PREVIEW_COUNTRIES.length)+' more</div>' +
+      '</div>' +
+    '</section>';
+
+    var closing = '<section class="wrap" style="padding:8px 24px 72px;">' +
+      '<div class="cta-band">' +
+        '<div><div style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:4px;">Ready to see it in action?</div>' +
+        '<div style="font-size:13px;color:var(--slate);">Try a draft for free, or check plans built for teams.</div></div>' +
+        '<div style="display:flex;gap:10px;">' +
+          '<button class="btn btn-ghost" onclick="App.setView(\'pricing\')">View pricing</button>' +
+          '<button class="btn btn-primary" onclick="App.goProtected(\'mode\')">Get started '+icon("arrowRight",14)+'</button>' +
+        '</div>' +
+      '</div>' +
+    '</section>';
+
+    return hero + twoPaths + whyNot + instruments + jurisdictions + closing;
+  }
+
+  /* ============================= pricing ============================= */
+  function renderPricing(){
+    var tiers = PRICING_TIERS.map(function(t){
+      var cls = "tier-card" + (t.highlighted ? " highlighted" : "");
+      var badge = t.highlighted ? '<div class="tier-badge">MOST POPULAR</div>' : "";
+      var features = t.features.map(function(f){
+        return '<div class="tier-feature">'+icon("check",14)+'<span style="color:var(--ink);">'+escapeHtml(f)+'</span></div>';
+      }).join("");
+      var isTrial = t.id === "trial";
+      var btn = isTrial
+        ? '<button class="btn btn-nav primary btn-block" onclick="App.goProtected(\'mode\')">'+escapeHtml(t.cta)+'</button>'
+        : '<button class="btn btn-nav btn-block" disabled title="Billing isn\'t live yet">'+escapeHtml(t.cta)+'</button>';
+      return '<div class="'+cls+'">' + badge +
+        '<div class="tier-name" style="margin-top:'+(t.highlighted?"6px":"0")+';">'+escapeHtml(t.name)+'</div>' +
+        '<div class="tier-tagline">'+escapeHtml(t.tagline)+'</div>' +
+        '<div style="margin-bottom:18px;"><span class="tier-price">'+escapeHtml(t.price)+'</span><span class="tier-period">'+escapeHtml(t.period)+'</span></div>' +
+        '<div class="tier-features">'+features+'</div>' + btn +
+      '</div>';
+    }).join("");
+
+    return '<section class="wrap-pricing" style="padding:56px 24px 72px;">' +
+      '<div style="margin-bottom:36px;text-align:center;">' +
+        '<div class="eyebrow" style="text-align:center;">PRICING</div>' +
+        '<h1 class="h-title" style="font-size:32px;text-align:center;">Plans built around documents and jurisdictions</h1>' +
+        '<p style="font-size:14px;color:var(--slate);max-width:480px;margin:8px auto 0;">Every plan includes both drafting and review. Upgrade when you need more documents, more countries, or more seats.</p>' +
+      '</div>' +
+      '<div class="grid-cols-4">'+tiers+'</div>' +
+      '<div class="banner sm" style="max-width:700px;margin:24px auto 0;text-align:center;">Additional jurisdictions beyond a plan\'s included countries: <strong>$15/month each</strong>. Billing isn\'t connected yet — pricing shown reflects the planned structure.</div>' +
+      '<div style="text-align:center;margin-top:28px;"><button class="btn btn-ghost" onclick="App.setView(\'landing\')">'+icon("arrowLeft",14)+' Back to home</button></div>' +
+    '</section>';
+  }
+
+  /* ============================= login ============================= */
+  function renderLogin(){
+    var err = state.login.error;
+    return '<section class="wrap-narrow" style="padding:64px 24px;">' +
+      '<div class="card" style="padding:32px 28px;">' +
+        '<div style="display:flex;justify-content:center;margin-bottom:18px;"><div class="icon-circle" style="width:44px;height:44px;margin-bottom:0;">'+icon("keyRound",20,"color:var(--brass);")+'</div></div>' +
+        '<h1 class="h-title" style="font-size:22px;text-align:center;">Sign in with your work account</h1>' +
+        '<p class="sub" style="text-align:center;margin:6px 0 26px;">AnyPolicy is built for organizations. Use your work email to continue.</p>' +
+        '<div class="field"><label>Work email</label>' +
+          '<div class="input-icon-wrap">'+icon("mail",15) +
+          '<input id="emailInput" type="text" placeholder="you@yourcompany.com" ' +
+            'style="'+(err ? "border-color:var(--brass);" : "")+'" ' +
+            'oninput="App.onEmailInput(this.value)" onkeydown="if(event.key===\'Enter\')App.handleLoginContinue();"/>' +
+          '</div></div>' +
+        (err ? '<div style="display:flex;gap:6px;align-items:flex-start;margin-top:-10px;margin-bottom:16px;">'+icon("alertCircle",13,"color:var(--brass);margin-top:2px;")+'<span style="font-size:12px;color:var(--brass);">'+escapeHtml(err)+'</span></div>' : "") +
+        '<button class="btn btn-primary btn-block" style="padding:11px 16px;margin-top:4px;" onclick="App.handleLoginContinue()">Continue '+icon("arrowRight",14)+'</button>' +
+        '<div style="display:flex;align-items:center;gap:10px;margin:20px 0;"><div style="flex:1;height:1px;background:var(--rule);"></div><span style="font-size:11px;color:var(--slate);">OR</span><div style="flex:1;height:1px;background:var(--rule);"></div></div>' +
+        '<button class="btn btn-ghost btn-block" disabled title="SSO is not yet connected" style="opacity:.6;cursor:not-allowed;">Continue with Single Sign-On (SSO)</button>' +
+        '<div class="banner sm" style="margin-top:22px;margin-bottom:0;"><strong style="font-family:var(--font-display);font-weight:600;">Prototype sign-in.</strong> This confirms you used a work email — it doesn\'t verify your identity or connect to a real directory yet.</div>' +
+      '</div>' +
+      '<div style="text-align:center;margin-top:20px;"><button class="btn btn-ghost" onclick="App.setView(\'landing\')">'+icon("arrowLeft",14)+' Back to home</button></div>' +
+    '</section>';
+  }
+
+  window.App = window.App || {};
+  App.onEmailInput = function(val){
+    state.login.email = val;
+    if(state.login.error){
+      state.login.error = "";
+      var input = document.getElementById("emailInput");
+      if(input) input.style.borderColor = "var(--rule)";
+      var errWrap = document.getElementById("loginErrorWrap");
+      if(errWrap) errWrap.remove();
+    }
+  };
+  App.handleLoginContinue = function(){
+    var result = parseWorkEmail(state.login.email);
+    if(!result.valid){
+      state.login.error = result.error;
+      render();
+      return;
+    }
+    state.login.error = "";
+    state.user = {email:result.email, domain:result.domain, initials:result.initials, org:result.org};
+    setView(state.pendingView);
+  };
+
+  /* ============================= mode select ============================= */
+  function renderModeSelect(){
+    return '<section class="wrap-mode" style="padding:56px 24px;">' +
+      '<div style="margin-bottom:32px;"><div class="eyebrow">CHOOSE A PATH</div><h1 class="h-title" style="font-size:30px;">What would you like to do?</h1></div>' +
+      '<div class="grid-mode">' +
+        '<button class="mode-card" onclick="App.goProtected(\'draft\')">' +
+          '<div class="icon-circle">'+icon("filePlus2",20)+'</div>' +
+          '<div><div class="mode-card-title">Draft a new policy</div><div class="mode-card-desc">Start from nothing. Answer a short set of questions about your organization and the jurisdiction it operates in.</div></div>' +
+          '<div class="mode-card-cta">Start drafting '+icon("arrowRight",14)+'</div>' +
+        '</button>' +
+        '<button class="mode-card" onclick="App.goProtected(\'review\')">' +
+          '<div class="icon-circle">'+icon("fileSearch",20)+'</div>' +
+          '<div><div class="mode-card-title">Review an existing policy</div><div class="mode-card-desc">Already have a policy document? Paste it in or upload it, and check it against the laws of a chosen jurisdiction.</div></div>' +
+          '<div class="mode-card-cta">Start review '+icon("arrowRight",14)+'</div>' +
+        '</button>' +
+      '</div>' +
+      '<button class="btn btn-ghost" style="margin-top:28px;" onclick="App.setView(\'landing\')">'+icon("arrowLeft",14)+' Back</button>' +
+    '</section>';
+  }
+
+  /* ============================= wizard shell ============================= */
+  function wizardShell(steps, step, docRef, contentHtml, idPrefix){
+    var items = steps.map(function(s){
+      var active = s.id === step, done = s.id < step;
+      var badgeCls = "step-badge" + (active?" active":"") + (done?" done":"");
+      var clickable = done ? " clickable" : "";
+      var onclick = done ? ' onclick="App.jumpStep(\''+idPrefix+'\','+s.id+')"' : "";
+      return '<li class="step-item'+clickable+'"'+onclick+'>' +
+        '<div class="'+badgeCls+'">'+(done ? icon("check",13) : String(s.id).padStart(2,"0"))+'</div>' +
+        '<span class="step-label'+(active?" active":"")+'">'+escapeHtml(s.label)+'</span>' +
+      '</li>';
+    }).join("");
+
+    return '<div class="docref-bar"><div class="docref-inner">'+escapeHtml(docRef)+'</div></div>' +
+      '<div class="wrap-wizard" style="padding:36px 24px 24px;">' +
+        '<div class="grid-wizard">' +
+          '<nav aria-label="Progress"><ol class="step-nav-list"><div class="step-rail"></div>'+items+'</ol></nav>' +
+          '<main>'+contentHtml+'</main>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function stepCard(eyebrow, title, subtitle, inner){
+    return '<div class="card" style="padding:28px 28px 24px;">' +
+      '<div class="eyebrow">'+escapeHtml(eyebrow)+'</div>' +
+      '<h1 class="h-title" style="font-size:24px;font-weight:600;">'+escapeHtml(title)+'</h1>' +
+      '<p class="sub" style="margin-bottom:22px;">'+escapeHtml(subtitle)+'</p>' +
+      inner +
+    '</div>';
+  }
+
+  function wizardNav(step, totalSteps, canAdvance, backAction, nextAction, finalLabel, finalTitle){
+    var nextBtn;
+    if(step < totalSteps){
+      nextBtn = '<button class="btn btn-nav'+(canAdvance?" primary":"")+'" '+(canAdvance?"":"disabled")+' onclick="'+nextAction+'">Continue '+icon("arrowRight",15)+'</button>';
+    } else {
+      nextBtn = '<button class="btn btn-nav final" disabled title="'+escapeHtml(finalTitle)+'">'+escapeHtml(finalLabel)+' '+icon("arrowRight",15)+'</button>';
+    }
+    return '<div style="display:flex;justify-content:space-between;margin-top:28px;">' +
+      '<button class="btn btn-nav" onclick="'+backAction+'">'+icon("arrowLeft",15)+' Back</button>' +
+      nextBtn +
+    '</div>';
+  }
+
+  function countryPickerHtml(idPrefix, query, selected){
+    return '<div>' +
+      '<div class="input-icon-wrap" style="margin-bottom:16px;">'+icon("search",16) +
+      '<input type="text" placeholder="Search country or region" value="'+escapeHtml(query)+'" ' +
+        'oninput="App.onCountryQuery(\''+idPrefix+'\', this.value)"/></div>' +
+      '<div class="grid-country" id="'+idPrefix+'CountryGrid">'+countryGridItems(idPrefix, query, selected)+'</div>' +
+    '</div>';
+  }
+
+  function countryGridItems(idPrefix, query, selected){
+    var q = (query||"").trim().toLowerCase();
+    var list = COUNTRIES.filter(function(c){
+      return !q || c.name.toLowerCase().indexOf(q) !== -1 || c.region.toLowerCase().indexOf(q) !== -1;
+    });
+    if(list.length === 0){
+      return '<div style="color:var(--slate);font-size:13px;padding:8px 2px;">No jurisdictions match "'+escapeHtml(query)+'".</div>';
+    }
+    return list.map(function(c){
+      var sel = selected && selected.iso2 === c.iso2;
+      return '<button class="chip chip-country'+(sel?" selected":"")+'" onclick="App.selectCountry(\''+idPrefix+'\',\''+c.iso2+'\')">' +
+        '<span style="font-size:18px;">'+flagEmoji(c.iso2)+'</span>' +
+        '<span><div style="font-size:13px;font-weight:500;">'+escapeHtml(c.name)+'</div><div class="region">'+escapeHtml(c.region)+'</div></span>' +
+      '</button>';
+    }).join("");
+  }
+
+  function instrumentPickerHtml(idPrefix, mode, selected){
+    return '<div style="display:grid;gap:12px;">' +
+      POLICY_TYPES.map(function(p){
+        var sel = mode === "multi" ? selected.indexOf(p.id) !== -1 : selected === p.id;
+        var shape = mode === "multi" ? "square" : "round";
+        var handler = mode === "multi" ? "App.togglePolicy('"+p.id+"')" : "App.selectInstrument('"+p.id+"')";
+        return '<button class="instrument-row'+(sel?" selected":"")+'" onclick="'+handler+'">' +
+          '<div class="instrument-icon">'+icon(p.icon,17)+'</div>' +
+          '<div style="flex:1;"><div style="display:flex;justify-content:space-between;align-items:center;">' +
+            '<span style="font-family:var(--font-display);font-size:17px;font-weight:600;">'+escapeHtml(p.title)+'</span>' +
+            '<span style="font-family:var(--font-mono);font-size:11px;color:var(--brass);">'+p.code+'</span></div>' +
+            '<p style="font-size:13px;color:var(--slate);margin:4px 0 0;">'+escapeHtml(p.description)+'</p></div>' +
+          '<div class="instrument-check '+shape+'">'+(sel?icon("check",13,"color:var(--paper);"):"")+'</div>' +
+        '</button>';
+      }).join("") +
+    '</div>';
+  }
+
+  function reviewRow(iconName, label, value){
+    return '<div class="review-row">'+icon(iconName,16)+
+      '<div><div class="rlabel">'+escapeHtml(label)+'</div><div class="rvalue">'+value+'</div></div></div>';
+  }
+
+  /* ============================= draft wizard ============================= */
+  function draftDocRef(){
+    var d = state.draft;
+    var parts = ["AP"];
+    parts.push(d.country ? d.country.iso2 : "--");
+    parts.push(d.selectedPolicies.length ? d.selectedPolicies.map(function(id){return findPolicy(id).code;}).join("+") : "----");
+    parts.push(todayRef());
+    return parts.join(" / ");
+  }
+  function draftCanAdvance(){
+    var d = state.draft;
+    return {1: d.orgName.trim().length>0 && d.sector.length>0, 2: !!d.country, 3: d.selectedPolicies.length>0, 4:true}[d.step];
+  }
+
+  function renderDraftWizard(){
+    var d = state.draft;
+    var content = "";
+    if(d.step === 1){
+      var sectorChips = SECTORS.map(function(s){
+        return '<button class="chip'+(d.sector===s?" selected":"")+'" onclick="App.setSector(\''+s.replace(/'/g,"\\'")+'\')">'+escapeHtml(s)+'</button>';
+      }).join("");
+      content = stepCard("Step 01","Tell us about the organization","This appears on the cover page of every instrument drafted.",
+        '<div class="field"><label>Organization name</label>' +
+          '<input id="orgNameInput" type="text" placeholder="e.g. Meridian Health Trust" oninput="App.onOrgNameInput(this.value)"/></div>' +
+        '<div class="field"><label>Sector</label><div class="grid-cols-2">'+sectorChips+'</div></div>'
+      );
+    } else if(d.step === 2){
+      content = stepCard("Step 02","Select the governing jurisdiction","Policies are drafted to reflect the laws of this country.",
+        countryPickerHtml("draft", d.countryQuery, d.country));
+    } else if(d.step === 3){
+      content = stepCard("Step 03","Choose the instruments to draft","Select one or more. Each is drafted as a separate document.",
+        instrumentPickerHtml("draft","multi", d.selectedPolicies));
+    } else {
+      var table = '<div class="review-table">' +
+        reviewRow("building2","Organization", escapeHtml(d.orgName || "—")) +
+        reviewRow("clipboardList","Sector", escapeHtml(d.sector || "—")) +
+        reviewRow("globe2","Jurisdiction", d.country ? flagEmoji(d.country.iso2)+"  "+escapeHtml(d.country.name)+" · "+escapeHtml(d.country.region) : "—") +
+        reviewRow("fileText","Instruments", d.selectedPolicies.length ? escapeHtml(d.selectedPolicies.map(function(id){return findPolicy(id).title;}).join(", ")) : "—") +
+      '</div>';
+      content = stepCard("Step 04","Review the dossier","Confirm the details below before drafting begins.",
+        table +
+        '<div class="banner"><strong style="font-family:var(--font-display);font-weight:600;">Drafting engine — coming next.</strong> This screen confirms the dossier is ready. Generating the actual clause language for '+(d.country?escapeHtml(d.country.name):"the selected jurisdiction")+' is the next phase of this build.</div>' +
+        '<p class="disclaimer">Nothing produced by this tool constitutes legal advice. Results should be reviewed by qualified local counsel before adoption.</p>');
+    }
+
+    var nav = wizardNav(d.step, 4, draftCanAdvance(), "App.draftBack()", "App.draftNext()", "Compile draft", "Drafting engine not yet built");
+    return wizardShell(DRAFT_STEPS, d.step, draftDocRef(), content + nav, "draft");
+  }
+
+  App.onOrgNameInput = function(val){
+    state.draft.orgName = val;
+    updateNavButton(draftCanAdvance());
+  };
+  App.setSector = function(s){ state.draft.sector = s; render(); };
+  App.draftBack = function(){
+    if(state.draft.step === 1) setView("mode");
+    else { state.draft.step -= 1; render(); }
+  };
+  App.draftNext = function(){
+    if(!draftCanAdvance()) return;
+    state.draft.step += 1; render();
+  };
+
+  /* ============================= review wizard ============================= */
+  function reviewDocRef(){
+    var r = state.review;
+    var parts = ["AP-REV"];
+    parts.push(r.country ? r.country.iso2 : "--");
+    parts.push(r.instrument ? findPolicy(r.instrument).code : "--");
+    parts.push(todayRef());
+    return parts.join(" / ");
+  }
+  function reviewCanAdvance(){
+    var r = state.review;
+    return {1: !!r.country, 2: !!r.instrument, 3: r.docText.trim().length>0, 4:true}[r.step];
+  }
+  function wordCount(text){
+    var t = (text||"").trim();
+    return t ? t.split(/\s+/).length : 0;
+  }
+
+  function renderReviewWizard(){
+    var r = state.review;
+    var content = "";
+    if(r.step === 1){
+      content = stepCard("Step 01","Select the governing jurisdiction","Your document will be checked against the laws of this country.",
+        countryPickerHtml("review", r.countryQuery, r.country));
+    } else if(r.step === 2){
+      content = stepCard("Step 02","What kind of policy is this?","Choose the instrument that best matches your document.",
+        instrumentPickerHtml("review","single", r.instrument));
+    } else if(r.step === 3){
+      var wc = wordCount(r.docText);
+      content = stepCard("Step 03","Add your document","Paste the text, or upload a plain text file.",
+        '<div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px;">' +
+          '<button class="btn btn-ghost sm" onclick="document.getElementById(\'fileInput\').click()">'+icon("uploadCloud",14)+' Upload file</button>' +
+          '<input id="fileInput" type="file" accept=".txt,.md" style="display:none;" onchange="App.onFileChosen(this)"/>' +
+        '</div>' +
+        '<textarea id="docTextArea" placeholder="Paste the full text of your existing policy here…" oninput="App.onDocTextInput(this.value)"></textarea>' +
+        '<div style="display:flex;justify-content:space-between;margin-top:8px;flex-wrap:wrap;gap:6px;">' +
+          '<span id="wordCountLabel" style="font-size:11px;color:var(--slate);">'+(r.fileName?"Loaded from "+escapeHtml(r.fileName)+" · ":"")+wc+" word"+(wc===1?"":"s")+'</span>' +
+          '<span style="font-size:11px;color:var(--slate);display:flex;align-items:center;gap:4px;">'+icon("alertCircle",12)+' Currently accepts .txt / .md — PDF and Word support coming soon</span>' +
+        '</div>');
+    } else {
+      var wc4 = wordCount(r.docText);
+      var table = '<div class="review-table">' +
+        reviewRow("globe2","Jurisdiction", r.country ? flagEmoji(r.country.iso2)+"  "+escapeHtml(r.country.name)+" · "+escapeHtml(r.country.region) : "—") +
+        reviewRow("fileText","Instrument", r.instrument ? escapeHtml(findPolicy(r.instrument).title) : "—") +
+        reviewRow("clipboardList","Document", wc4+" word"+(wc4===1?"":"s")+(r.fileName?" · "+escapeHtml(r.fileName):" · pasted text")) +
+      '</div>';
+      content = stepCard("Step 04","Review the submission","Confirm the details below before the check begins.",
+        table +
+        '<div class="banner"><strong style="font-family:var(--font-display);font-weight:600;">Compliance check — coming next.</strong> This screen confirms your document is ready. Comparing its clauses against '+(r.country?escapeHtml(r.country.name):"the selected jurisdiction")+'\'s requirements and flagging gaps is the next phase of this build.</div>' +
+        '<p class="disclaimer">Nothing produced by this tool constitutes legal advice. Results should be reviewed by qualified local counsel before adoption.</p>');
+    }
+
+    var nav = wizardNav(r.step, 4, reviewCanAdvance(), "App.reviewBack()", "App.reviewNext()", "Run review", "Review engine not yet built");
+    return wizardShell(REVIEW_STEPS, r.step, reviewDocRef(), content + nav, "review");
+  }
+
+  App.onDocTextInput = function(val){
+    state.review.docText = val;
+    state.review.fileName = "";
+    var wc = wordCount(val);
+    var label = document.getElementById("wordCountLabel");
+    if(label) label.textContent = wc + " word" + (wc===1?"":"s");
+    updateNavButton(reviewCanAdvance());
+  };
+  App.onFileChosen = function(input){
+    var file = input.files && input.files[0];
+    if(!file) return;
+    state.review.fileName = file.name;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      state.review.docText = String(ev.target.result || "");
+      render();
+    };
+    reader.readAsText(file);
+  };
+  App.reviewBack = function(){
+    if(state.review.step === 1) setView("mode");
+    else { state.review.step -= 1; render(); }
+  };
+  App.reviewNext = function(){
+    if(!reviewCanAdvance()) return;
+    state.review.step += 1; render();
+  };
+
+  /* ============================= shared wizard interactions ============================= */
+  App.onCountryQuery = function(idPrefix, val){
+    var target = idPrefix === "draft" ? state.draft : state.review;
+    target.countryQuery = val;
+    var grid = document.getElementById(idPrefix+"CountryGrid");
+    if(grid) grid.innerHTML = countryGridItems(idPrefix, val, target.country);
+  };
+  App.selectCountry = function(idPrefix, iso2){
+    var target = idPrefix === "draft" ? state.draft : state.review;
+    target.country = findCountry(iso2);
+    render();
+  };
+  App.togglePolicy = function(id){
+    var list = state.draft.selectedPolicies;
+    var i = list.indexOf(id);
+    if(i === -1) list.push(id); else list.splice(i,1);
+    render();
+  };
+  App.selectInstrument = function(id){
+    state.review.instrument = id;
+    render();
+  };
+  App.jumpStep = function(idPrefix, stepId){
+    var target = idPrefix === "draft" ? state.draft : state.review;
+    if(stepId < target.step){ target.step = stepId; render(); }
+  };
+
+  function updateNavButton(canAdvance){
+    var buttons = document.querySelectorAll("main .btn-nav");
+    var nextBtn = buttons[buttons.length-1];
+    if(!nextBtn || nextBtn.classList.contains("final")) return;
+    nextBtn.disabled = !canAdvance;
+    nextBtn.classList.toggle("primary", canAdvance);
+  }
+
+  /* ============================= expose + init ============================= */
+  App.setView = setView;
+  App.goProtected = goProtected;
+  App.handleSignOut = handleSignOut;
+
+  render();
+})();
+</script>
+</body>
+</html>
