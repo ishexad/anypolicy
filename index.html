@@ -9,18 +9,18 @@
 <body>
 <style>
   :root{
-    --ink:#1C3829;
-    --parchment:#F6F1E7;
+    --ink:#111111;
+    --parchment:#F7F7F5;
     --paper:#FFFFFF;
-    --brass:#7A2E2E;
-    --brass-light:#B97575;
-    --slate:#5C6B62;
-    --sage:#8C7A3D;
-    --rule:#DDD6C5;
-    --banner-bg:#F6EFDC;
-    --selected-bg:#F7EEEE;
-    --font-display: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
-    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --brass:#000000;
+    --brass-light:#8A8A8A;
+    --slate:#555555;
+    --sage:#111111;
+    --rule:#D6D6D2;
+    --banner-bg:#F1F1EE;
+    --selected-bg:#EFEFEC;
+    --font-display: 'Times New Roman', Georgia, 'Iowan Old Style', 'Palatino Linotype', serif;
+    --font-body: Georgia, 'Times New Roman', 'Iowan Old Style', 'Palatino Linotype', serif;
     --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
   }
   *{box-sizing:border-box;}
@@ -74,7 +74,7 @@
 
   /* -------- header / footer -------- */
   .site-header{
-    border-bottom:2px solid var(--ink);
+    border-bottom:3px double var(--ink);
     background:var(--paper);
     position:sticky;top:0;z-index:10;
   }
@@ -89,7 +89,7 @@
   .link-btn{background:none;border:none;cursor:pointer;font-size:13px;font-weight:500;color:var(--slate);padding:0;}
   .user-chip{
     display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;
-    border:1px solid var(--rule);border-radius:20px;background:var(--paper);cursor:pointer;
+    border:1px solid var(--rule);border-radius:2px;background:var(--paper);cursor:pointer;
   }
   .user-avatar{
     width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--paper);
@@ -102,7 +102,7 @@
   }
 
   /* -------- buttons -------- */
-  .btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:5px;cursor:pointer;font-family:var(--font-body);}
+  .btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:2px;cursor:pointer;font-family:var(--font-body);}
   .btn-primary{padding:9px 16px;font-size:13px;font-weight:600;background:var(--ink);color:var(--paper);}
   .btn-primary.lg{padding:12px 22px;font-size:14px;}
   .btn-ghost{padding:9px 14px;font-size:13px;font-weight:500;background:transparent;color:var(--ink);border:1px solid var(--rule);}
@@ -116,7 +116,7 @@
 
   /* -------- generic cards / sections -------- */
   .section{max-width:1040px;margin:0 auto;padding:40px 24px;}
-  .card{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:24px;}
+  .card{background:var(--paper);border:1px solid var(--rule);border-radius:2px;padding:24px;}
   .icon-circle{
     width:40px;height:40px;border-radius:50%;background:var(--parchment);
     display:flex;align-items:center;justify-content:center;margin-bottom:14px;
@@ -127,7 +127,7 @@
 
   /* -------- chip / picker -------- */
   .chip{
-    padding:10px 12px;font-size:13px;border:1.5px solid var(--rule);border-radius:5px;
+    padding:10px 12px;font-size:13px;border:1.5px solid var(--rule);border-radius:2px;
     cursor:pointer;background:var(--paper);color:var(--ink);text-align:left;transition:border-color .15s;
   }
   .chip.selected{background:var(--ink);color:var(--paper);border-color:var(--ink);}
@@ -137,7 +137,7 @@
 
   .instrument-row{
     display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;
-    padding:16px 18px;border-radius:6px;border:1.5px solid var(--rule);background:var(--paper);cursor:pointer;
+    padding:16px 18px;border-radius:2px;border:1.5px solid var(--rule);background:var(--paper);cursor:pointer;
   }
   .instrument-row.selected{border-color:var(--ink);background:var(--selected-bg);}
   .instrument-icon{
@@ -150,12 +150,12 @@
     flex-shrink:0;margin-top:2px;background:transparent;
   }
   .instrument-check.round{border-radius:50%;}
-  .instrument-check.square{border-radius:4px;}
+  .instrument-check.square{border-radius:0;}
   .instrument-row.selected .instrument-check{border-color:var(--ink);background:var(--ink);}
 
   input[type=text],input[type=email],textarea{
     width:100%;padding:10px 12px;font-size:14px;font-family:var(--font-body);
-    border:1.5px solid var(--rule);border-radius:5px;background:var(--paper);color:var(--ink);
+    border:1.5px solid var(--rule);border-radius:2px;background:var(--paper);color:var(--ink);
   }
   textarea{min-height:220px;resize:vertical;line-height:1.6;}
   .field{margin-bottom:18px;}
@@ -165,7 +165,7 @@
   .input-icon-wrap input{padding-left:36px;}
 
   .banner{
-    border:1px dashed var(--brass);border-radius:6px;padding:16px 18px;background:var(--banner-bg);
+    border:1px dashed var(--brass);border-radius:2px;padding:16px 18px;background:var(--banner-bg);
     font-size:13px;color:var(--ink);margin-bottom:20px;line-height:1.5;
   }
   .banner.sm{padding:12px 14px;font-size:11.5px;}
@@ -176,7 +176,7 @@
   .review-row svg{color:var(--brass);margin-top:2px;flex-shrink:0;}
   .review-row .rlabel{font-size:11px;color:var(--slate);margin-bottom:2px;}
   .review-row .rvalue{font-size:14px;font-weight:500;}
-  .review-table{border:1px solid var(--rule);border-radius:6px;background:var(--paper);overflow:hidden;margin-bottom:20px;}
+  .review-table{border:1px solid var(--rule);border-radius:2px;background:var(--paper);overflow:hidden;margin-bottom:20px;}
 
   /* -------- wizard step nav -------- */
   .step-nav-list{list-style:none;margin:0;padding:0;position:relative;}
@@ -197,18 +197,18 @@
   .docref-inner{max-width:960px;margin:0 auto;padding:10px 24px;font-family:var(--font-mono);font-size:12px;color:var(--brass);text-align:right;}
 
   /* -------- comparison section -------- */
-  .compare-card{border-radius:8px;padding:24px;}
+  .compare-card{border-radius:2px;padding:24px;}
   .compare-card.generic{background:var(--parchment);border:1.5px solid var(--rule);}
-  .compare-card.feature{background:var(--paper);border:2px solid var(--brass);position:relative;box-shadow:0 20px 40px -28px rgba(28,56,41,0.35);}
-  .compare-badge{position:absolute;top:-12px;right:20px;background:var(--brass);color:var(--paper);font-size:10.5px;font-weight:700;letter-spacing:0.06em;padding:4px 10px;border-radius:20px;}
+  .compare-card.feature{background:var(--paper);border:2px solid var(--brass);position:relative;box-shadow:0 20px 40px -28px rgba(0,0,0,0.3);}
+  .compare-badge{position:absolute;top:-12px;right:20px;background:var(--brass);color:var(--paper);font-size:10.5px;font-weight:700;letter-spacing:0.06em;padding:4px 10px;border-radius:2px;}
   .compare-title{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
   .compare-row{display:flex;gap:10px;align-items:flex-start;}
   .compare-list{display:grid;gap:14px;}
 
   /* -------- pricing -------- */
-  .tier-card{position:relative;background:var(--paper);border:1.5px solid var(--rule);border-radius:8px;padding:22px;display:flex;flex-direction:column;}
-  .tier-card.highlighted{border:2px solid var(--brass);box-shadow:0 20px 40px -28px rgba(28,56,41,0.35);}
-  .tier-badge{position:absolute;top:-12px;left:20px;background:var(--brass);color:var(--paper);font-size:10px;font-weight:700;letter-spacing:0.06em;padding:4px 10px;border-radius:20px;}
+  .tier-card{position:relative;background:var(--paper);border:1.5px solid var(--rule);border-radius:2px;padding:22px;display:flex;flex-direction:column;}
+  .tier-card.highlighted{border:2px solid var(--brass);box-shadow:0 20px 40px -28px rgba(0,0,0,0.3);}
+  .tier-badge{position:absolute;top:-12px;left:20px;background:var(--brass);color:var(--paper);font-size:10px;font-weight:700;letter-spacing:0.06em;padding:4px 10px;border-radius:2px;}
   .tier-name{font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:4px;}
   .tier-tagline{font-size:12px;color:var(--slate);margin-bottom:16px;min-height:32px;}
   .tier-price{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--ink);}
@@ -218,13 +218,13 @@
   .tier-feature svg{color:var(--sage);margin-top:2px;flex-shrink:0;}
 
   /* -------- country pills (landing) -------- */
-  .pill{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--rule);border-radius:20px;background:var(--paper);font-size:13px;}
-  .pill-more{display:flex;align-items:center;padding:8px 14px;border-radius:20px;font-size:13px;color:var(--brass);font-weight:600;}
+  .pill{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--rule);border-radius:2px;background:var(--paper);font-size:13px;}
+  .pill-more{display:flex;align-items:center;padding:8px 14px;border-radius:2px;font-size:13px;color:var(--brass);font-weight:600;}
 
   /* -------- misc -------- */
-  .cta-band{border:1.5px solid var(--ink);border-radius:8px;padding:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;background:var(--paper);}
+  .cta-band{border:1.5px solid var(--ink);border-radius:2px;padding:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;background:var(--paper);}
   .mode-card{
-    text-align:left;background:var(--paper);border:1.5px solid var(--rule);border-radius:8px;padding:26px;
+    text-align:left;background:var(--paper);border:1.5px solid var(--rule);border-radius:2px;padding:26px;
     cursor:pointer;display:flex;flex-direction:column;gap:14px;width:100%;
   }
   .mode-card .icon-circle{width:44px;height:44px;margin-bottom:0;}
@@ -232,8 +232,8 @@
   .mode-card-desc{font-size:13px;color:var(--slate);line-height:1.55;}
   .mode-card-cta{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--brass);margin-top:auto;}
 
-  .hero-mock{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:22px;box-shadow:0 24px 48px -24px rgba(28,56,41,0.25);}
-  .path-card{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:24px;}
+  .hero-mock{background:var(--paper);border:1px solid var(--ink);border-radius:2px;padding:22px;box-shadow:0 24px 48px -24px rgba(0,0,0,0.25);}
+  .path-card{background:var(--paper);border:1px solid var(--rule);border-radius:2px;padding:24px;}
 </style>
 
 <div id="app"></div>
